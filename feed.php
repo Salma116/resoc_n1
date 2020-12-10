@@ -75,7 +75,7 @@
                         . "`posts`.`created`,"
                         . "`users`.`alias` as author_name,  "
                         . "count(`likes`.`id`) as like_number,  "
-                        . "GROUP_CONCAT(`tags`.`label`) AS taglist "
+                        . "GROUP_CONCAT(distinct`tags`.`label`) AS taglist "
                         . "FROM `followers` "
                         . "JOIN `users` ON `users`.`id`=`followers`.`followed_user_id`"
                         . "JOIN `posts` ON `posts`.`user_id`=`users`.`id`"
@@ -98,13 +98,13 @@
                  */
                  while ($post = $lesInformations->fetch_assoc())
                  {
-                    // echo "<pre>" . print_r($post, 1) . "</pre>";
+                   //echo "<pre>" . print_r($post, 1) . "</pre>";
                 ?>
                 <article>
                     <h3>
                         <time datetime='2020-02-01 11:12:13' ><?php echo $post['created'] ?></time>
                     </h3>
-                    <address><a href="http://localhost:8888/resoc_n1/wall.php?user_id=<?php echo $post['user_id']; ?>">par <?php echo $post['author_name'] ?></a></address>
+                    <address><a href="wall.php?user_id=<?php echo $post['user_id']; ?>">par <?php echo $post['author_name'] ?></a></address>
                     <div>
                         <p><?php echo $post['content'] ?></p>
                     </div>
