@@ -66,33 +66,8 @@ session_start();
       </section>
     </aside>
     <main>
-      <?php
-      /**
-      * Etape 3: récupérer tous les messages de l'utilisatrice
-      */
-      $laQuestionEnSql = "SELECT `posts`.`content`,"
-      . "`posts`.`created`,"
-      . "`users`.`alias` as author_name,  "
-      . "count(`likes`.`id`) as like_number,  "
-      . "GROUP_CONCAT(distinct`tags`.`label`) AS taglist "
-      . "FROM `posts`"
-      . "JOIN `users` ON  `users`.`id`=`posts`.`user_id`"
-      . "LEFT JOIN `posts_tags` ON `posts`.`id` = `posts_tags`.`post_id`  "
-      . "LEFT JOIN `tags`       ON `posts_tags`.`tag_id`  = `tags`.`id` "
-      . "LEFT JOIN `likes`      ON `likes`.`post_id`  = `posts`.`id` "
-      . "WHERE `posts`.`user_id`='" . intval($userId) . "' "
-      . "GROUP BY `posts`.`id`"
-      . "ORDER BY `posts`.`created` DESC  "
-      ;
-      $lesInformations = $mysqli->query($laQuestionEnSql);
-      if ( ! $lesInformations)
-      {
-        echo("Échec de la requete : " . $mysqli->error);
-      }
 
-      /**
-      * Etape 4: @todo Parcourir les messsages et remplir correctement le HTML avec les bonnes valeurs php
-      */
+      <?php
       if ($_SESSION['connected_id'] === $userId) {
 
       ?>
@@ -105,10 +80,10 @@ session_start();
         */
         // Etape 1 : vérifier si on est en train d'afficher ou de traiter le formulaire
         // si on recoit un champs email rempli il y a une chance que ce soit un traitement
-        //$enCoursDeTraitement = isset($_POST['auteur']);
+        $enCoursDeTraitement = isset($_POST['message']);
         //echo "auteur = ". $_POST['auteur'];
-        //if ($enCoursDeTraitement)
-        //{
+        if ($enCoursDeTraitement)
+        {
           // on ne fait ce qui suit que si un formulaire a été soumis.
           // Etape 2: récupérer ce qu'il y a dans le formulaire @todo: c'est là que votre travaille se situe
           // observez le résultat de cette ligne de débug (vous l'effacerez ensuite)
@@ -142,7 +117,7 @@ session_start();
           {
             echo "Message posté en tant que :" . $user['alias'];
           }
-        //}
+        }
         ?>
         <form action="wall.php?user_id=<?php echo $user['id']; ?>" method="post">
           <dl>
@@ -156,6 +131,29 @@ session_start();
 
     <?php
     }
+      /**
+      * Etape 3: récupérer tous les messages de l'utilisatrice
+      */
+      $laQuestionEnSql = "SELECT `posts`.`content`,"
+      . "`posts`.`created`,"
+      . "`users`.`alias` as author_name,  "
+      . "count(`likes`.`id`) as like_number,  "
+      . "GROUP_CONCAT(distinct`tags`.`label`) AS taglist "
+      . "FROM `posts`"
+      . "JOIN `users` ON  `users`.`id`=`posts`.`user_id`"
+      . "LEFT JOIN `posts_tags` ON `posts`.`id` = `posts_tags`.`post_id`  "
+      . "LEFT JOIN `tags`       ON `posts_tags`.`tag_id`  = `tags`.`id` "
+      . "LEFT JOIN `likes`      ON `likes`.`post_id`  = `posts`.`id` "
+      . "WHERE `posts`.`user_id`='" . intval($userId) . "' "
+      . "GROUP BY `posts`.`id`"
+      . "ORDER BY `posts`.`created` DESC  "
+      ;
+      $lesInformations = $mysqli->query($laQuestionEnSql);
+      if ( ! $lesInformations)
+      {
+        echo("Échec de la requete : " . $mysqli->error);
+      }
+
       while ($post = $lesInformations->fetch_assoc())
       {
 
