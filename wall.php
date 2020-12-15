@@ -130,7 +130,31 @@ session_start();
       </article>
 
     <?php
-    }
+    } else { ?>
+      <form method = "post" action = "">
+        <input type = "submit" name="followButton" value="suivre"></input>
+        <?php 
+        $buttonClicked = isset($_POST['followButton']);
+        if ($buttonClicked) {
+          $lInstructionSql = "INSERT INTO `followers` "
+          . "(`id`, `followed_user_id`, `following_user_id`) "
+          . "VALUES (NULL, "
+          . "" . $userId . ", "
+          . "'" . $authorId . "', )"
+          . "";
+          echo $lInstructionSql;
+          $ok = $mysqli->query($lInstructionSql);
+          if ( ! $ok)
+          {
+            echo "Impossible de s'abonner" . $mysqli->error;
+          } else
+          {
+            echo "Vous êtes maintenant abonné à" . $user['alias'];
+          }
+        }
+        ?>
+      </form>
+    <?php }
       /**
       * Etape 3: récupérer tous les messages de l'utilisatrice
       */
