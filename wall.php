@@ -130,19 +130,33 @@ session_start();
       </article>
 
     <?php
-    } else { ?>
+    } else { 
+        $connectId = $_SESSION['connected_id'];
+        $sql = "SELECT * FROM `followers` WHERE `followed_user_id` = $userId AND following_user_id = $connectId";
+        $res = $mysqli->query($sql);
+        $dejaAbonne = (($res->num_rows) != 0);
+        
+        if ($dejaAbonne) { ?>
+          <form method = "post" action = "">
+          <input type = "submit" name="unfollowButton" value="Déjà abonné"></input>
+          </form>
+        <?php }
+        
+        else {?>
+        
       <form method = "post" action = "">
         <input type = "submit" name="followButton" value="suivre"></input>
         <?php 
         $buttonClicked = isset($_POST['followButton']);
+        
         if ($buttonClicked) {
           $lInstructionSql = "INSERT INTO `followers` "
-          . "(`id`, `followed_user_id`, `following_user_id`) "
-          . "VALUES (NULL, "
+          . "(`followed_user_id`, `following_user_id`) "
+          . "VALUES ("
           . "" . $userId . ", "
-          . "'" . $authorId . "', )"
+          . "" . $connectId . ")"
           . "";
-          echo $lInstructionSql;
+          //echo $lInstructionSql;
           $ok = $mysqli->query($lInstructionSql);
           if ( ! $ok)
           {
@@ -155,6 +169,7 @@ session_start();
         ?>
       </form>
     <?php }
+      }
       /**
       * Etape 3: récupérer tous les messages de l'utilisatrice
       */
